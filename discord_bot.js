@@ -4,7 +4,8 @@ class discord_bot {
         const { Client, RichEmbed } = require('discord.js');
         const EventEmitter = require('events');
         this.client = new Client();
-        this.chat = "";
+        this.room = "";
+        this.server = "";
         this.Emitter = new EventEmitter();
         this.connected = false;
 
@@ -26,14 +27,16 @@ class discord_bot {
         this.client.login(token);
     }
 
-    set(room) {
-        this.chat = room;
+    set(server, room) {
+        this.server = server;
+        this.room = room;
     }
 
     send(message) {
         if (this.connected == true) {
-            const channel = this.client.channels.find(ch => ch.name === this.chat);
+            const channel = this.client.channels.find(ch => ch.name === this.room);
             if (!channel) return;
+            if (channel.guild.name != this.server) return;
             channel.send(message);
             return true;
         } else {
