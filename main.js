@@ -3,12 +3,18 @@ const discord_bot = require("./discord_bot.js");
 const { Client, RichEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 const streamOptions = { seek: 0, volume: 1 };
-const async = require('async');
 const bot = new discord_bot();
 const music = require("node-hashtable");
 const translate_mode = require("node-hashtable");
 var translate_A = "";
 var translate_B = "";
+const interduce = new RichEmbed()
+    .setTitle('야레야레, 오레사마 등장!')
+    .setColor(0xFF0000)
+    .setAuthor("Ohkay", "https://www.suyongso.com/files/attach/images/115/940/418/024/99b983892094b5c6d2fc3736e15da7d1.jpeg")
+    .setImage("https://www.suyongso.com/files/attach/images/115/377/837/024/99b983892094b5c6d2fc3736e15da7d1.jpeg")
+    .setDescription("--설명\n--재생 [유튜브 링크]\n--중지\n--추천\n--번역모드 [대상언어(ko)] [변환언어(ja)]\n--삭제 [개수 : 최대 99개, 14일 이내만 가능]\n\n **명령어들을 사용해보라굿..!**\n~~따,,,딱히 널 위해 준비한게 아니니까 착각하지말라구!!~~\n\n아 참고로 난 갠톡으로 보내는 찐따들에게 답변해주지않는다구~ 잘 알아둬!")
+    .setTimestamp();
 bot.start("NTUyNjk4ODQ1MzY5NDY2ODkx.D2DUeg.-eaFse4wcJQo4HkWs-EEER1Px20"); // 서버의 Token
 
 // 메세지를 받음
@@ -37,7 +43,7 @@ bot.Emitter.on('message', (user, message) => {
         case "--중지":
             if (message.guild) {
                 if (music.get(message.channel.guild.name) != undefined) {
-                    music.get(message.channel.guild.name).end();
+                    (music.get(message.channel.guild.name)).end();
                 }
                 message.member.voiceChannel.leave();
             }
@@ -77,6 +83,26 @@ bot.Emitter.on('message', (user, message) => {
             message.channel.send("https://mangashow5.me/bbs/board.php?bo_table=msm_manga&wr_id=36279");
             break;
 
+        case "--설명":
+            message.channel.send(interduce);
+            break;
+
+        case "--삭제":
+            if (message.guild) {
+                if (Array.length == 2) {
+                    var limit = Array[1];
+                    if (limit > 99)
+                        limit = 99;
+                    async function clear() {
+                        message.delete();
+                        const fetched = await message.channel.fetchMessages({ limit: limit });
+                        message.channel.bulkDelete(fetched);
+                    }
+                    clear();
+                }
+            }
+            break;
+
         default:
             if (message.guild) {
                 if ((translate_mode.get(message.channel.guild.name) != undefined) && (translate_mode.get(message.channel.guild.name) == 1)) {
@@ -89,20 +115,10 @@ bot.Emitter.on('message', (user, message) => {
 
 // 서버 시작시
 bot.Emitter.on('start', () => {
-    const embed = new RichEmbed()
-        .setTitle('A slick little embed')
-        .setColor(0xFF0000)
-        .setDescription('Hello, this is a slick embed!');
     console.log("서버 시작");
-    bot.send("외국문화동아리", "bottest", embed);
+    bot.send("외국문화동아리", "bottest", interduce);
     bot.client.user.setStatus('available')
-    bot.client.user.setPresence({
-        game: {
-            name: '5등분의 신부 보십쇼',
-            type: "",
-            url: ""
-        }
-    });
+    bot.client.user.setActivity('--설명', { type: 'WATCHING' });
 });
 
 function translate(String, message) {
