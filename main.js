@@ -27,7 +27,7 @@ bot.Emitter.on('message', (user, message) => {
                     message.member.voiceChannel.join()
                         .then(connection => {
                             if (music.get(message.channel.guild.name) != undefined) {
-                                music.get(message.channel.guild.name).end();
+                                (music.get(message.channel.guild.name)).end();
                             }
                             message.channel.send("재생 시작");
                             const stream = ytdl(Array[1], { filter: 'audioonly' });
