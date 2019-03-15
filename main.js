@@ -103,6 +103,38 @@ bot.Emitter.on('message', (user, message) => {
             }
             break;
 
+        case "--일본뉴스":
+            var request = require('request');
+            request('https://news.yahoo.co.jp/', function (error, response, html) {
+                if (error) { throw error };
+
+                var string = ((html.split('<ul class="toptopics_list">'))[1]
+                    .split("<li class=\"toptopics_button\">")[0])
+                    .replace(/<li>/g, '')
+                    .replace(/<\/li>/g, '')
+                    .replace(/<\/a>/g, '')
+                    .replace(/        /g, '')
+                    .replace(/      /g, '')
+                    .replace(/  /g, '')
+                    .replace(/    /g, '')
+                    .replace(/\n\n\n\n/g, '')
+                    .replace(/\n\n/g, '')
+                    .replace(/&amp;/g, '&')
+                    .replace(/<li class="toptopics_list_current">/g, '')
+                    .replace(/\n\n/g, '');
+
+                var strArray = string.split("\n");
+                var write_string = "";
+
+                for (var i = 1; i <= 8; i++) {
+                    write_string += (strArray[i * 2 - 1].split("<a href=\"")[0]) + "\n"; // 링크 들고오기
+                    write_string += " - " + (strArray[i * 2 - 2].split("<a href=\"")[1]).split("\" data-ylk=")[0] + "\n"; // 링크 들고오기
+                }
+                message.content = write_string;
+                bot.translate("ja", "ko", message, translate_news);
+            });
+            break;
+
         default:
             if (message.guild) {
                 if ((translate_mode.get(message.channel.guild.name) != undefined) && (translate_mode.get(message.channel.guild.name) == 1)) {
@@ -123,4 +155,22 @@ bot.Emitter.on('start', () => {
 
 function translate(String, message) {
     message.channel.send(String);
+}
+
+function translate_news(String, message) {
+    var strArray = String.split("\n");
+    var string_text = "";
+    for (var i = 1; i <= 8; i++) {
+        string_text += "**" + strArray[i * 2 - 2] + "**" + "\n";
+        string_text += strArray[i * 2 - 1] + "\n";
+        string_text += "\n";
+    }
+    var msg_news = new RichEmbed()
+        .setTitle('쇼 - 가 나이나! **일본 뉴-스** 를 보여주마!')
+        .setColor(0xFF0000)
+        .setAuthor("Ohkay", "https://www.suyongso.com/files/attach/images/115/940/418/024/99b983892094b5c6d2fc3736e15da7d1.jpeg")
+        .setDescription(string_text)
+        .setTimestamp();
+
+    message.channel.send(msg_news);
 }
