@@ -73,6 +73,10 @@ bot.Emitter.on('message', (user, message) => {
             message.channel.send(text);
             break;
 
+        case "--추천":
+            message.channel.send("https://mangashow5.me/bbs/board.php?bo_table=msm_manga&wr_id=36279");
+            break;
+
         default:
             if (message.guild) {
                 if ((translate_mode.get(message.channel.guild.name) != undefined) && (translate_mode.get(message.channel.guild.name) == 1)) {
@@ -91,6 +95,14 @@ bot.Emitter.on('start', () => {
         .setDescription('Hello, this is a slick embed!');
     console.log("서버 시작");
     bot.send("외국문화동아리", "bottest", embed);
+    bot.client.user.setStatus('available')
+    bot.client.user.setPresence({
+        game: {
+            name: '5등분의 신부 보십쇼',
+            type: "",
+            url: ""
+        }
+    });
 });
 
 function translate(String, message) {
