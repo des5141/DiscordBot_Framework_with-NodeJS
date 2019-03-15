@@ -35,42 +35,49 @@ bot.Emitter.on('message', (user, message) => {
             break;
 
         case "--중지":
-            if (music.get(message.channel.guild.name) != undefined) {
-                music.get(message.channel.guild.name).end();
+            if (message.guild) {
+                if (music.get(message.channel.guild.name) != undefined) {
+                    music.get(message.channel.guild.name).end();
+                }
+                message.member.voiceChannel.leave();
             }
-            message.member.voiceChannel.leave();
             break;
 
         case "--번역모드":
-            if (translate_mode.get(message.channel.guild.name) == undefined)
-                translate_mode.set(message.channel.guild.name, -1);
-            translate_mode.set(message.channel.guild.name, translate_mode.get(message.channel.guild.name) * -1);
+            if (message.guild) {
+                if (translate_mode.get(message.channel.guild.name) == undefined)
+                    translate_mode.set(message.channel.guild.name, -1);
+                translate_mode.set(message.channel.guild.name, translate_mode.get(message.channel.guild.name) * -1);
 
-            if (translate_mode.get(message.channel.guild.name) == -1)
-                message.channel.send("**번역모드를 껐습니다**");
-            if (translate_mode.get(message.channel.guild.name) == 1) {
-                message.channel.send("**번역모드를 켰습니다**");
-                if (Array.length == 3) {
-                    translate_A = Array[1];
-                    translate_B = Array[2];
+                if (translate_mode.get(message.channel.guild.name) == -1)
+                    message.channel.send("**번역모드를 껐습니다**");
+                if (translate_mode.get(message.channel.guild.name) == 1) {
+                    message.channel.send("**번역모드를 켰습니다**");
+                    if (Array.length == 3) {
+                        translate_A = Array[1];
+                        translate_B = Array[2];
+                    }
                 }
             }
             break;
 
         case "--상태":
-            var text = "**현재 Ohkay 의 상태는?**" + "\n";
-            if ((translate_mode.get(message.channel.guild.name) == 1)&& (translate_mode.get(message.channel.guild.name) != undefined))
-                text += "- 현재 **번역모드**가 켜져있습니다." + "\n";
+            if (message.guild) {
+                var text = "**현재 Ohkay 의 상태는?**" + "\n";
+                if ((translate_mode.get(message.channel.guild.name) == 1) && (translate_mode.get(message.channel.guild.name) != undefined))
+                    text += "- 현재 **번역모드**가 켜져있습니다." + "\n";
 
-            if (music.get(message.channel.guild.name) != undefined)
-                text += "- 현재 노래를 재생 중입니다" + "\n";
-
+                if (music.get(message.channel.guild.name) != undefined)
+                    text += "- 현재 노래를 재생 중입니다" + "\n";
+            }
             message.channel.send(text);
             break;
 
         default:
-            if ((translate_mode.get(message.channel.guild.name) != undefined)&&(translate_mode.get(message.channel.guild.name) == 1)) {
-                bot.translate(translate_A, translate_B, message, translate);
+            if (message.guild) {
+                if ((translate_mode.get(message.channel.guild.name) != undefined) && (translate_mode.get(message.channel.guild.name) == 1)) {
+                    bot.translate(translate_A, translate_B, message, translate);
+                }
             }
             break;
     }
