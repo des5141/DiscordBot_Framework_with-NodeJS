@@ -1,4 +1,6 @@
 'use strict';
+// android linux test
+// testing testing
 const discord_bot = require("./discord_bot.js");
 const { Client, RichEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
