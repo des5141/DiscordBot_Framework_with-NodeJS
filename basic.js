@@ -50,7 +50,16 @@ bot.Emitter.on('message', (user, message)=>{
 			});
 			break;
 
-		case 'image':
+		default:
+			try {
+				if(fs.existsSync('function/'+Array[0]+'.js')) {
+					var func = require('./function/'+Array[0]+'.js');
+					func(user, message);
+					console.log(" - running func".gray);
+				}
+			}catch(err){
+				console.log(err);
+			}
 			break;
 	}
 });
