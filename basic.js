@@ -1,3 +1,5 @@
+class main {
+constructor() {
 const bot = new (require("./discord_bot.js"))();
 const colors = require("colors");
 const request = require('request');
@@ -7,7 +9,7 @@ var test = new bot.RichEmbed()
 	.setTitle("RichEmbed Testing")
 	.setAuthor("Ohkay")
 	.setTimestamp();
-var userList = { };
+this.userList = { };
 
 bot.Emitter.on('start', () => {
 	console.log(" Discord Bot is now Running ".inverse);
@@ -28,12 +30,12 @@ bot.Emitter.on('message', (user, message)=>{
 			break;
 
 		case 'Count':
-			if (userList[user] == undefined)
-				userList[user] = 0;
+			if (this.userList[user] == undefined)
+				this.userList[user] = 0;
 			else
-				userList[user]++;
-			message.channel.send(`**Count** - ${userList[user]}`);
-			console.dir(userList);
+				this.userList[user]++;
+			message.channel.send(`**Count** - ${this.userList[user]}`);
+			console.dir(this.userList);
 			break;
 
 		case 'news':
@@ -54,12 +56,14 @@ bot.Emitter.on('message', (user, message)=>{
 			try {
 				if(fs.existsSync('function/'+Array[0]+'.js')) {
 					var func = require('./function/'+Array[0]+'.js');
-					func(user, message);
+					func(user, message, this);
 					console.log(" - running func".gray);
 				}
-			}catch(err){
-				console.log(err);
-			}
+			}catch(err){console.log(err);}
 			break;
 	}
 });
+}
+}
+
+a = new main();
