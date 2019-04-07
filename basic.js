@@ -1,5 +1,7 @@
 const bot = new (require("./discord_bot.js"))();
-var colors = new require("colors");
+const colors = require("colors");
+const request = require('request');
+const fs = require('fs');
 bot.start("NTUyNjk4ODQ1MzY5NDY2ODkx.D2DUeg.-eaFse4wcJQo4HkWs-EEER1Px20");
 var test = new bot.RichEmbed()
 	.setTitle("RichEmbed Testing")
@@ -32,6 +34,23 @@ bot.Emitter.on('message', (user, message)=>{
 				userList[user]++;
 			message.channel.send(`**Count** - ${userList[user]}`);
 			console.dir(userList);
+			break;
+
+		case 'news':
+			request('https://news.yahoo.co.jp/pickup/computer/rss.xml', (error, response, html)=>{
+				if (error) {}else{
+					var str = html.split('<item>');
+					for(var i = 1; i < str.length; i++) {
+					var embed = new bot.RichEmbed()
+					.setAuthor(str[i].split('<title>')[1].split('</title>')[0])
+					.setTitle(str[i].split('<link>')[1].split('</link>')[0]);
+					message.channel.send(embed);
+					}
+				}
+			});
+			break;
+
+		case 'image':
 			break;
 	}
 });
