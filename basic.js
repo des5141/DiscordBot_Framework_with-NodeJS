@@ -9,6 +9,7 @@ const colors = require("colors");
 const request = require('request');
 const fs = require('fs');
 const RichEmbed = bot.RichEmbed;
+const operator_start = 'o!';
 
 // Variable init
 this.userList = { };
@@ -36,16 +37,6 @@ case 'Termux':
 	console.log(" - get Termux Operator".gray);
 break;
 
-case 'Count':
-	if (this.userList[user] == undefined)
-		this.userList[user] = 0;
-	else
-		this.userList[user]++;
-	message.channel.send(
-		`**Count** - ${this.userList[user]}`);
-	console.dir(this.userList);
-break;
-
 case 'news':
 	request('https://news.yahoo.co.jp/pickup/computer/rss.xml', (error, response, html)=>{
 	if (!error) {
@@ -59,12 +50,33 @@ case 'news':
 break;
 
 default:
+// is it start with operator_start?
+if(Array[0].startsWith(operator_start)) {
 	try {
-if(fs.existsSync('function/'+Array[0]+'.js')) {
-var func = require('./function/'+Array[0]+'.js');
+if(fs.existsSync(`function/${Array[0].split(operator_start)[1]}.js`)) {
+var func = require(`./function/${Array[0].split(operator_start)[1]}.js`);
 func(user, message, this);
 console.log(" - running func".gray);
 	}}catch(err){console.log(err);}
+}
+
+// other message
+else {
+// user is exists?
+if (fs.existsSync(`user/${message.author.id}.json`)) {
+var json_read = JSON.parse(fs.readFileSync(`./user/${message.author.id}.json`));
+json_read.exp = json_read.exp + (message.content).length;
+fs.writeFileSync(`./user/${message.author.id}.json`, JSON.stringify(json_read));
+}
+
+// not exists
+else {
+var json_write = { level : 1, exp : 0 };
+fs.writeFileSync(`./user/${message.author.id}.json`, JSON.stringify(json_write));
+}
+
+}
+
 break;
 }});
 
