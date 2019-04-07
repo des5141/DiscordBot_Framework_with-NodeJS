@@ -1,7 +1,3 @@
-<div>
-<img alt="Go To Wiki" src="./Images/sample.png" width="450" />
-</div>
-
 # Node.js Discord Bot Framework
 
 Easy to make discord bot
