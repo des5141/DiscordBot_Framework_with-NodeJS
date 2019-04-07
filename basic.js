@@ -71,7 +71,7 @@ fs.writeFileSync(`./user/${message.author.id}.json`, JSON.stringify(json_read));
 
 // not exists
 else {
-var json_clear = require('./function/clear_user_data.js');
+var json_clear = require('./system_function/clear_user_data.js');
 json_clear(message.author.id);
 }
 
