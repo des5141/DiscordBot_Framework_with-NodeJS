@@ -67,6 +67,8 @@ if (fs.existsSync(`user/${message.author.id}.json`)) {
 var json_read = JSON.parse(fs.readFileSync(`./user/${message.author.id}.json`));
 json_read.exp = json_read.exp + (message.content).length;
 fs.writeFileSync(`./user/${message.author.id}.json`, JSON.stringify(json_read));
+var levelup = require('./system_function/user_levelup.js');
+levelup(message.author.id);
 }
 
 // not exists
